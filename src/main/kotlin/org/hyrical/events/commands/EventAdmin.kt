@@ -119,7 +119,14 @@ object EventAdmin : BaseCommand() {
 
     @Subcommand("revive")
     @Description("Revives a specific player.")
+    fun revive(sender: CommandSender, @Name("target") target: Player) {
+        if (!EventManager.isEventActive()) {
+            sender.sendMessage(Chat.format("&cError: There is no ongoing event."))
+            return
+        }
 
+        // TODO:
+    }
     @Subcommand("reviveall")
     @Description("Revives all player's.")
 }
