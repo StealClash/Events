@@ -5,7 +5,11 @@ import co.aikar.commands.CommandHelp
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.HelpCommand
+import co.aikar.commands.annotation.Name
 import co.aikar.commands.annotation.Subcommand
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.command.CommandSender
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.utils.Chat
@@ -25,6 +29,12 @@ object EventAdmin : BaseCommand() {
         sender.sendMessage(" ")
         sender.sendMessage(Chat.format("&eCurrent Event: &f" + EventManager.getCurrentEventName()))
         sender.sendMessage(Chat.format("&eAlive: &f" + EventManager.getCurrentAlive()))
-        sender.sendMessage(Chat.format("&eSpectators: &f" + ))
+        sender.sendMessage(Chat.format("&eSpectators: &f" + EventManager.getCurrentSpectators()))
+        sender.sendMessage(Chat.format("&eHosted By: &f" + EventManager.activeEvent?.startedBy))
+    }
+
+    @Subcommand("start")
+    fun start(sender: CommandSender, @Name("eventName") name: String) {
+        
     }
 }
