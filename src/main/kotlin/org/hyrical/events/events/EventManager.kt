@@ -1,45 +1,58 @@
 package org.hyrical.events.events
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
-import org.hyrical.events.utils.Chat
+import org.bukkit.entity.Player
+import org.hyrical.events.events.impl.TestEvent
+import org.hyrical.events.utils.saveToConfig
+import java.util.UUID
 
 object EventManager {
 
-    var activeEvent: Event? = null
+    val alivePlayers: ArrayList<UUID> = arrayListOf()
+    val spectators: ArrayList<UUID> = arrayListOf()
 
-    fun isEventActive() = activeEvent != null
+    val events: ArrayList<Event> = arrayListOf()
 
-    fun getCurrentEventName() = if (isEventActive()) {
-        activeEvent?.name
-    } else {
-        "None"
+    val eventHost: Player? = null
+    val eventStartedAt: Long = 0L
+    val currentEvent: Event? = null
+
+    val time: Long = 0L
+
+    fun init(){
+        events.add(TestEvent)
     }
 
-    fun getCurrentAlive() = if (isEventActive()) {
-        activeEvent?.alive?.size.toString()
-    } else {
-        "N/A"
+    fun serializeEvent(obj: EventObject){
+        if (obj.location1 != null){
+            saveToConfig("${obj.name}.location1.x", obj.location1!!.x)
+            saveToConfig("${obj.name}.location1.z", obj.location1!!.z)
+
+            saveToConfig("${obj.name}.world", obj.location1!!.world)
+        }
+
+        if (obj.location2 != null){
+            saveToConfig("${obj.name}.location2.x", obj.location2!!.x)
+            saveToConfig("${obj.name}.location2.z", obj.location2!!.z)
+        }
+
     }
 
-    fun getCurrentSpectators() = if (isEventActive()) {
-        activeEvent?.spectating?.size.toString()
-    } else {
-        "N/A"
+    fun updateAlivePlayers(){
+        alivePlayers.clear()
+
+        for (player in Bukkit.getOnlinePlayers()){
+            alivePlayers.add(player.uniqueId)
+        }
+
+        println("Updated alive players")
     }
 
-    fun setActiveEvent(event: Event) {
-        assert(!this.isEventActive()) { "You cannot start an event whilst one is already started." }
+    fun getEvent(name: String): Event {
+        return events.first { it.getName() == name }
+    }
 
-        this.activeEvent = event
+    fun getEventObject(){
 
-        // Broadcast message
-        Bukkit.broadcastMessage(Chat.format("&#FF5C82&lS&#FE6689&lT&#FD7091&lE&#FC7A98&lA&#FB839F&lL&#FA8DA7&lC&#F997AE&lL&#F8A1B5&lA&#F8ABBD&lS&#F7B5C4&lH &#F6BFCB&lE&#F5C9D3&lV&#F4D2DA&lE&#F3DCE1&lN&#F2E6E9&lT&#F1F0F0&lS"))
-        Bukkit.broadcastMessage(" ")
-        Bukkit.broadcast(
-            Component.text("An event has been activated!!", NamedTextColor.YELLOW)
-        )
     }
 }

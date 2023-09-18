@@ -1,12 +1,19 @@
 package org.hyrical.events.events
 
-import java.util.UUID
+import co.aikar.commands.BaseCommand
+import org.bukkit.Location
+import org.bukkit.entity.Player
+import org.bukkit.event.Listener
 
-data class Event(
-    val startedAt: Long = System.currentTimeMillis(),
-    var joinable: Boolean = true,
-    var alive: MutableList<UUID> = mutableListOf(),
-    val spectating: MutableList<UUID> = mutableListOf(),
-    var name: String,
-    var startedBy: String
-)
+abstract class Event {
+
+    abstract fun getName(): String
+    abstract fun getScoreboardLines(): MutableList<String>
+
+    abstract fun getCommands(): ArrayList<BaseCommand>
+    abstract fun getListeners(): ArrayList<Listener>
+
+    open fun startEvent(player: Player){}
+    open fun startEvent(player: Player, target: Player){}
+
+}

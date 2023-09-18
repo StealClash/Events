@@ -25,6 +25,8 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     implementation("com.github.Nopock:Store:4.25")
+    implementation("com.github.cryptomorin:XSeries:9.5.0") { isTransitive = false }
+
 }
 
 tasks.withType<KotlinCompile> {

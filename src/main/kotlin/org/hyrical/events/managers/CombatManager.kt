@@ -1,4 +1,4 @@
-package org.hyrical.events.combat
+package org.hyrical.events.managers
 
 object CombatManager {
 
