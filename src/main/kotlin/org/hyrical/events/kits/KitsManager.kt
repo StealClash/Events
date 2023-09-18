@@ -11,6 +11,6 @@ object KitsManager {
     var contents: MutableList<ItemStack>? = null
 
     fun setItems(inventory: PlayerInventory) {
-        contents.addAll(inventory.contents.toList())
+        contents?.addAll(inventory.contents.toCollection())
     }
 }

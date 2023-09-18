@@ -127,6 +127,4 @@ object EventAdmin : BaseCommand() {
 
         // TODO:
     }
-    @Subcommand("reviveall")
-    @Description("Revives all player's.")
 }
