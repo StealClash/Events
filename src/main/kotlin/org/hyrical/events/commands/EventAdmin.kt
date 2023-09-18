@@ -15,9 +15,11 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.hyrical.events.combat.CombatManager
 import org.hyrical.events.events.Event
 import org.hyrical.events.events.EventManager
+import org.hyrical.events.kits.KitsManager
 import org.hyrical.events.teleport.TeleportManager
 import org.hyrical.events.utils.Chat
 
@@ -50,7 +52,7 @@ object EventAdmin : BaseCommand() {
         sender.sendMessage(Chat.format("&aAfter that update the alive players in /event-admin reviveall"))
         sender.sendMessage(Chat.format("&aThen set the kit in /event-admin setkit"))
         sender.sendMessage(Chat.format("&aThen run /event-admin start <name> then /teleportall"))
-        sender.sendMessage(Chat.format("&aThen run /event-admin giveallkit <kitName>"))
+        sender.sendMessage(Chat.format("&aThen run /event-admin giveallkit"))
         sender.sendMessage(Chat.format("&aLastly enable combat with /event-admin enablecombat and let chaos ensue."))
         sender.sendMessage(Chat.format("&7&oGood luck!"))
     }
@@ -119,12 +121,23 @@ object EventAdmin : BaseCommand() {
 
     @Subcommand("revive")
     @Description("Revives a specific player.")
-    fun revive(sender: CommandSender, @Name("target") target: Player) {
+    fun revive(sender: Player, @Name("target") target: Player) {
         if (!EventManager.isEventActive()) {
             sender.sendMessage(Chat.format("&cError: There is no ongoing event."))
             return
         }
 
-        // TODO:
+        if (EventManager.activeEvent?.alive?.contains(target.uniqueId) == true) {
+            sender.sendMessage(Chat.format("&cError: The target player is currently alive."))
+            return
+        }
+
+        target.teleport(target, PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT)
+        KitsManager.applyKit(target)
+
+        EventManager.activeEvent?.alive?.add(target.uniqueId)
+        EventManager.activeEvent?.spectating?.remove(target.uniqueId)
+
+        sender.sendMessage(Chat.format("&aYou have revived ${target.name}."))
     }
 }
