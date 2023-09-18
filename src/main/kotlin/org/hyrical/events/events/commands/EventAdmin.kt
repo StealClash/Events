@@ -46,6 +46,7 @@ object EventAdmin : BaseCommand() {
                     val x = config.getDouble("$eventName.location1.x")
                     val z = config.getDouble("$eventName.location1.z")
 
+                    
                     if (config.getString("$eventName.location2") != null){
                         val lX = config.getDouble("$eventName.location1.x")
                         val lZ = config.getDouble("$eventName.location1.z")
