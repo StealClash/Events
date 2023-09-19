@@ -13,9 +13,9 @@ object EventManager {
 
     val events: ArrayList<Event> = arrayListOf()
 
-    val eventHost: Player? = null
-    val eventStartedAt: Long = 0L
-    val currentEvent: Event? = null
+    var eventHost: Player? = null
+    var eventStartedAt: Long = 0L
+    var currentEvent: Event? = null
 
     val time: Long = 0L
 

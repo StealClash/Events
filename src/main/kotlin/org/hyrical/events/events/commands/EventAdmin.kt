@@ -8,6 +8,7 @@ import org.bukkit.entity.Player
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.EventObject
+import org.hyrical.events.events.gui.EventsGUI
 import org.hyrical.events.utils.translate
 
 @CommandAlias("event-admin")
@@ -18,11 +19,12 @@ object EventAdmin : BaseCommand() {
 
     @Default
     fun eventGUI(player: Player){
-
+        EventsGUI().openMenu(player)
     }
 
     @Subcommand("setteleportlocations")
     fun setTeleport(player: Player, @Name("event") eventName: String, @Name("number") number: Int){
+
         if (number == 1){
             val eventObject = EventObject(eventName, location1 = player.location, null)
 
@@ -31,6 +33,9 @@ object EventAdmin : BaseCommand() {
             val eventObject = EventObject(eventName, null, location2 = player.location)
 
             EventManager.serializeEvent(eventObject)
+        } else {
+            player.sendMessage(translate("&cYou must provide a teleport location to set."))
+            return
         }
 
         player.sendMessage(translate("&asaved locations for $number"))
@@ -42,28 +47,36 @@ object EventAdmin : BaseCommand() {
 
         if (target == null){
             for (p in Bukkit.getOnlinePlayers()){
-                if (config.getString("$eventName.location1") != null){
-                    val x = config.getDouble("$eventName.location1.x")
-                    val z = config.getDouble("$eventName.location1.z")
+                scatter(p, eventName)
+            }
+        } else {
+            scatter(target, eventName)
+        }
 
-                    
-                    if (config.getString("$eventName.location2") != null){
-                        val lX = config.getDouble("$eventName.location1.x")
-                        val lZ = config.getDouble("$eventName.location1.z")
+        player.sendMessage(translate("&aScattered player(s)."))
+    }
 
-                        val randomX = EventsServer.RANDOM.nextDouble(x, lX)
-                        val randomZ = EventsServer.RANDOM.nextDouble(z, lZ)
+    fun scatter(p: Player, eventName: String){
+        if (config.getString("$eventName.location1") != null){
+            val x = config.getDouble("$eventName.location1.x")
+            val z = config.getDouble("$eventName.location1.z")
 
-                        val block = Bukkit.getWorld(config.getString("$eventName.world")!!)!!.getHighestBlockAt(randomX.toInt(), randomZ.toInt())!!
 
-                        p.teleport(block.location)
-                    } else {
-                        p.teleport(Location(
-                            Bukkit.getWorld(config.getString("$eventName.world")!!),
-                            x, Bukkit.getWorld(config.getString("$eventName.world")!!)!!.getHighestBlockAt(x.toInt(), z.toInt()).location.y,
-                            z))
-                    }
-                }
+            if (config.getString("$eventName.location2") != null){
+                val lX = config.getDouble("$eventName.location1.x")
+                val lZ = config.getDouble("$eventName.location1.z")
+
+                val randomX = EventsServer.RANDOM.nextDouble(x, lX)
+                val randomZ = EventsServer.RANDOM.nextDouble(z, lZ)
+
+                val block = Bukkit.getWorld(config.getString("$eventName.world")!!)!!.getHighestBlockAt(randomX.toInt(), randomZ.toInt())!!
+
+                p.teleport(block.location)
+            } else {
+                p.teleport(Location(
+                    Bukkit.getWorld(config.getString("$eventName.world")!!),
+                    x, Bukkit.getWorld(config.getString("$eventName.world")!!)!!.getHighestBlockAt(x.toInt(), z.toInt()).location.y,
+                    z))
             }
         }
     }

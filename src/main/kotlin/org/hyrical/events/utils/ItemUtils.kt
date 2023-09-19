@@ -1,4 +1,4 @@
-package org.hyrical.events.utils.items
+package org.hyrical.events.utils
 
 import org.bukkit.Material
 import org.bukkit.entity.Player

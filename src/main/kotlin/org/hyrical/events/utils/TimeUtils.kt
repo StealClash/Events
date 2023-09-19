@@ -1,4 +1,4 @@
-package org.hyrical.events.utils.time
+package org.hyrical.events.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -7,7 +7,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.abs
 import kotlin.math.round
-import kotlin.math.roundToInt
 
 
 object TimeUtils {

@@ -6,10 +6,9 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.hyrical.events.events.Event
+import org.hyrical.events.events.EventManager
 
 object TestEvent : Event() {
-
-    var startedAt: Long = 0L
 
     override fun getName(): String {
         return "Test"
@@ -28,6 +27,7 @@ object TestEvent : Event() {
     }
 
     override fun startEvent(player: Player){
-
+        startedAt = System.currentTimeMillis()
+        EventManager.currentEvent = this
     }
 }

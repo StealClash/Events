@@ -7,13 +7,17 @@ import org.bukkit.event.Listener
 
 abstract class Event {
 
+    var startedAt: Long = 0L
+
     abstract fun getName(): String
     abstract fun getScoreboardLines(): MutableList<String>
 
     abstract fun getCommands(): ArrayList<BaseCommand>
     abstract fun getListeners(): ArrayList<Listener>
 
-    open fun startEvent(player: Player){}
-    open fun startEvent(player: Player, target: Player){}
+    abstract fun startEvent(player: Player)
+
+    open fun startEventE(player: Player){}
+    open fun startEventE(player: Player, target: Player){}
 
 }
