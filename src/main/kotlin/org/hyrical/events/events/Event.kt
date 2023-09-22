@@ -17,7 +17,4 @@ abstract class Event {
 
     abstract fun startEvent(player: Player)
 
-    open fun startEventE(player: Player){}
-    open fun startEventE(player: Player, target: Player){}
-
 }

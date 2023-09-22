@@ -17,7 +17,8 @@ object EventManager {
     var eventStartedAt: Long = 0L
     var currentEvent: Event? = null
 
-    val time: Long = 0L
+    var baseTime: Long = 0L
+    var timeLeft: Long = 0L
 
     fun init(){
         events.add(TestEvent)

@@ -22,12 +22,17 @@ class EventsScoreboardProvider : ScoreboardAdapter {
         if (EventManager.currentEvent != null){
             lines.add(" &#FBC504⛃ &fEvent: &#FBC504${convertToSmallCapsFont(EventManager.currentEvent!!.getName())}")
         } else {
-            lines.add(" &#FBC504⛃ &fEvent: &#FBC504None!")
+            lines.add(" &#FBC504⛃ &fEvent: &#FBC504None")
         }
-        if (EventManager.time == 0L){
+        if (EventManager.timeLeft == 0L || EventManager.currentEvent == null){
             lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC5040s")
         } else {
-            lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${TimeUtils.formatDuration(EventManager.time - System.currentTimeMillis())}")
+            if (EventManager.timeLeft < 0){
+                lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${convertToSmallCapsFont("live")}")
+            } else {
+                lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${TimeUtils.formatDuration(EventManager.timeLeft - System.currentTimeMillis())}")
+
+            }
         }
         lines.add("")
         lines.add(" &#7CB3FB\uD83C\uDFA3 &fAlive: &#7CB3FB${EventManager.alivePlayers.size}/${Bukkit.getOnlinePlayers().size}")

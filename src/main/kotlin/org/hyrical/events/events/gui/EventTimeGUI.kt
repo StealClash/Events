@@ -23,6 +23,8 @@ class EventTimeGUI(val event: Event) : Menu() {
     override fun getButtons(player: Player): MutableMap<Int, Button> {
         val buttons: MutableMap<Int, Button> = mutableMapOf()
 
+        buttons[12] =
+
         return buttons
     }
 
