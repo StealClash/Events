@@ -1,54 +1,66 @@
 package org.hyrical.events.kits
 
-import org.bukkit.entity.Player
+import org.bukkit.Bukkit
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.PlayerInventory
 import org.hyrical.events.EventsServer
-import org.hyrical.events.utils.fromConfig
-import org.hyrical.events.utils.saveToConfig
+import org.hyrical.events.serializers.ItemStackSerializer
 
 object KitsManager {
 
-    var helmet: ItemStack? = null
-    var chestplate: ItemStack? = null
-    var leggings: ItemStack? = null
-    var boots: ItemStack? = null
-    var contents: MutableList<ItemStack?> = mutableListOf()
+    /*
+    val config = EventsServer.instance.config
 
-    fun setItems(inventory: PlayerInventory) {
-        contents.addAll(inventory.contents.toList())
-
-        helmet = inventory.helmet
-        chestplate = inventory.chestplate
-        leggings = inventory.leggings
-        boots = inventory.boots
+    fun createKit(kit: String){
+        config.set("kits.$kit.contents", arrayListOf<String>())
+        EventsServer.instance.saveConfig()
     }
 
-    fun applyKit(player: Player) {
-        player.inventory.apply {
-            this.helmet = helmet
-            this.chestplate = chestplate
-            this.leggings = leggings
-            this.boots = boots
-            this.contents = contents
+    fun saveItems(kit: String, contents: MutableList<ItemStack>){
+        val deserializedContent: ArrayList<String> = arrayListOf()
+
+        for (content in contents.filterNotNull()){
+            deserializedContent.add(ItemStackSerializer.itemToBase64(content))
         }
 
-        player.updateInventory()
+        for (deserialized in deserializedContent){
+            Bukkit.broadcastMessage(deserialized)
+
+        }
+
+        config.set("kits.$kit.contents", contents)
+
+        EventsServer.instance.saveConfig()
     }
 
-    fun saveKit(inventory: PlayerInventory) {
-        saveToConfig("kit.helmet", helmet)
-        saveToConfig("kit.chestplate", chestplate)
-        saveToConfig("kit.leggings", leggings)
-        saveToConfig("kit.boots", boots)
-        saveToConfig("kit.contents", contents)
+    fun getItems(kit: String): ArrayList<ItemStack>{
+        val deserialized = arrayListOf<ItemStack>()
+
+        for (content in config.("kits.$kit.contents")!!){
+            deserialized.add(ItemStackSerializer.itemFromBase64(content))
+        }
+
+        Bukkit.broadcastMessage(config.getList("kits.$kit.contents"))
+
+        return deserialized
     }
 
-    fun deserializeFromConfig() {
-        helmet = fromConfig("kit.helmet")
-        chestplate = fromConfig("kit.chestplate")
-        leggings = fromConfig("kit.leggings")
-        boots = fromConfig("kit.boots")
-        contents = fromConfig("kit.contents") ?: mutableListOf()
+    fun getAllKits(): ArrayList<String> {
+        val configSection: ConfigurationSection = config.getConfigurationSection("kits")!!
+        val kits: ArrayList<String> = arrayListOf()
+
+        for (key in configSection.getKeys(false)){
+            kits.add(key)
+        }
+
+        return kits
     }
+
+    fun deleteKit(kit: String){
+        config.set("kits.$kit", null)
+        EventsServer.instance.saveConfig()
+
+    }
+
+     */
 }

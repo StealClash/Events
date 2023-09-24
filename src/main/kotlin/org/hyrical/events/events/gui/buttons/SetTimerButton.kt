@@ -4,6 +4,7 @@ import org.bukkit.Material
 import org.bukkit.conversations.ConversationContext
 import org.bukkit.conversations.ConversationFactory
 import org.bukkit.conversations.Prompt
+import org.bukkit.conversations.StringPrompt
 import org.bukkit.conversations.ValidatingPrompt
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -21,7 +22,7 @@ class SetTimerButton(val event: Event) : Button() {
     override fun getItem(player: Player): ItemStack {
         return ItemBuilder.of(Material.NAME_TAG)
             .name(translate("&a&lSet Time"))
-            .addToLore("", "&fClick to set the event's time.")
+            .addToLore("", "&fClick to set the event's time to start.")
             .build()
     }
 
@@ -29,34 +30,25 @@ class SetTimerButton(val event: Event) : Button() {
         player.closeInventory()
         val conversationFactory = ConversationFactory(EventsServer.instance)
             .withModality(true)
-            .withFirstPrompt(object : ValidatingPrompt() {
+            .withFirstPrompt(object : StringPrompt() {
                 override fun getPromptText(context: ConversationContext): String {
                     return translate("&eType in chat for what time you would like. Type &ccancel &eto cancel.")
                 }
 
-                override fun isInputValid(context: ConversationContext, input: String): Boolean {
-                    return true
-                }
+                override fun acceptInput(context: ConversationContext, input: String?): Prompt? {
+                    val p = context.forWhom as Player
+                    val time = TimeUtils.parseTime(input!!.lowercase())
 
-                override fun acceptValidatedInput(context: ConversationContext, input: String): Prompt {
-                    when (input.lowercase()){
-                        "cancel" -> {
-                            EventTimeGUI(event).openMenu(player)
-                            player.sendMessage(translate("&cCancelled."))
-                        }
-                        else -> {
-                            val time = TimeUtils.parseTime(input.lowercase())
+                    if (time == 0) {
+                        p.sendRawMessage(translate("&cFailed to input time correctly."))
+                        EventTimeGUI(event).openMenu(p)
 
-                            if (time == 0) {
-                                player.sendMessage(translate("&cFailed to input time correctly."))
-                                EventTimeGUI(event).openMenu(player)
-
-                                return END_OF_CONVERSATION
-                            }
-
-                            EventManager.timeLeft = (time * 1000).toLong()
-                        }
+                        return this
                     }
+
+                    EventManager.timeLeft = ((time * 1000) + System.currentTimeMillis())
+                    EventManager.baseTime = ((time * 1000)).toLong()
+                    p.sendRawMessage(translate("&aSet timer"))
 
                     return END_OF_CONVERSATION
                 }

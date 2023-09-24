@@ -7,8 +7,10 @@ import org.hyrical.events.EventsServer
 import org.hyrical.events.utils.menus.Button
 import org.hyrical.events.utils.menus.Menu
 import org.hyrical.events.events.Event
+import org.hyrical.events.events.gui.buttons.EventStartButton
 import org.hyrical.events.events.gui.buttons.PvpButton
 import org.hyrical.events.events.gui.buttons.ScatterButton
+import org.hyrical.events.events.gui.buttons.TimeMenuButton
 
 class ManageEventGUI(val event: Event) : Menu() {
 
@@ -24,16 +26,9 @@ class ManageEventGUI(val event: Event) : Menu() {
         val buttons: MutableMap<Int, Button> = mutableMapOf()
 
         buttons[13] = ScatterButton(event)
-        buttons[15] =
+        buttons[11] = EventStartButton(event)
+        buttons[15] = TimeMenuButton(event)
 
         return buttons
-    }
-
-    override fun onClose(player: Player, inventory: Inventory) {
-        object : BukkitRunnable() {
-            override fun run() {
-                ChooseEventGUI().openMenu(player)
-            }
-        }.runTaskLater(EventsServer.instance, 1L)
     }
 }

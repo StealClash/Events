@@ -1,5 +1,6 @@
 package org.hyrical.events.events.gui.buttons
 
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -9,6 +10,7 @@ import org.hyrical.events.utils.ItemBuilder
 import org.hyrical.events.utils.menus.Button
 import org.hyrical.events.utils.translate
 import org.hyrical.events.events.Event
+import org.hyrical.events.events.EventManager
 
 class EventStartButton(val event: Event) : Button() {
     override fun getItem(player: Player): ItemStack {
@@ -19,7 +21,11 @@ class EventStartButton(val event: Event) : Button() {
     }
 
     override fun click(player: Player, slot: Int, clickType: ClickType, hotbarButton: Int) {
-        event.startEvent(player)
-        player.sendMessage(translate("&aStarting the event."))
+        EventManager.updateAlivePlayers()
+        EventManager.currentEvent = event
+
+        if (event.giveKitOnStart() == "") return
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kit all ${event.giveKitOnStart()} ${player.name}")
     }
 }

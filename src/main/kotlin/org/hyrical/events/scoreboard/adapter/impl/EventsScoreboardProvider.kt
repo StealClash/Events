@@ -24,14 +24,13 @@ class EventsScoreboardProvider : ScoreboardAdapter {
         } else {
             lines.add(" &#FBC504⛃ &fEvent: &#FBC504None")
         }
-        if (EventManager.timeLeft == 0L || EventManager.currentEvent == null){
-            lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC5040s")
+        if ((EventManager.timeLeft - System.currentTimeMillis()) <= 0 || EventManager.timeLeft == 0L){
+            lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${convertToSmallCapsFont("live")}")
         } else {
-            if (EventManager.timeLeft < 0){
-                lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${convertToSmallCapsFont("live")}")
+            if (TimeUtils.formatDuration((EventManager.timeLeft - System.currentTimeMillis())) == ""){
+                lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC5040s")
             } else {
-                lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${TimeUtils.formatDuration(EventManager.timeLeft - System.currentTimeMillis())}")
-
+                lines.add(" &#FBC504\uD83C\uDF0A &fTime: &#FBC504${TimeUtils.formatDuration((EventManager.timeLeft - System.currentTimeMillis()))}")
             }
         }
         lines.add("")

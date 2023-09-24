@@ -7,6 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
 import org.hyrical.events.kits.KitsManager
+import org.hyrical.events.kits.kit.KitCommand
+import org.hyrical.events.listeners.EventListeners
 import org.hyrical.events.scoreboard.ScoreboardHandler
 import org.hyrical.events.utils.menus.listener.MenuListener
 import kotlin.random.Random
@@ -15,32 +17,31 @@ class EventsServer : JavaPlugin() {
 
     companion object {
         lateinit var instance: EventsServer
-        var RANDOM = Random(System.currentTimeMillis())
+        var RANDOM = java.util.Random()
     }
 
     override fun onEnable() {
         instance = this
         saveDefaultConfig()
 
-        EventManager.init()
-
         val commandManager = PaperCommandManager(this)
         commandManager.enableUnstableAPI("help")
+
+        EventManager.init(commandManager)
 
         commandManager.registerCommand(EventAdmin)
 
         registerListener(MenuListener)
+        registerListener(EventListeners)
 
         ScoreboardHandler.load()
-
-        KitsManager.deserializeFromConfig()
     }
 
     override fun onDisable() {
-
+        saveConfig()
     }
 
-    fun registerListener(listener: Listener){
+    private fun registerListener(listener: Listener){
         Bukkit.getPluginManager().registerEvents(listener, this)
     }
 }

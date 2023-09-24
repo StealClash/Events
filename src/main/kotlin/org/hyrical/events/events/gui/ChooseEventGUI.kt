@@ -25,12 +25,4 @@ class ChooseEventGUI :  Menu() {
 
         return buttons
     }
-
-    override fun onClose(player: Player, inventory: Inventory) {
-        object : BukkitRunnable() {
-            override fun run() {
-                EventsGUI().openMenu(player)
-            }
-        }.runTaskLater(EventsServer.instance, 1L)
-    }
 }

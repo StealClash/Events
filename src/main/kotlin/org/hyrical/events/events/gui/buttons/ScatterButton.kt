@@ -18,7 +18,7 @@ class ScatterButton(val event: Event) : Button() {
     }
 
     override fun click(player: Player, slot: Int, clickType: ClickType, hotbarButton: Int) {
-        player.performCommand("/scatter ${event.getName()}")
+        player.performCommand("event-admin scatter ${event.getName()} all")
         player.closeInventory()
     }
 }
