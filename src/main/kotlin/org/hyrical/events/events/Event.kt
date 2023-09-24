@@ -8,6 +8,7 @@ import org.bukkit.event.Listener
 abstract class Event {
 
     abstract fun getName(): String
+    abstract fun getDisplayName(): String
     abstract fun getScoreboardLines(): MutableList<String>
 
     abstract fun getCommands(): ArrayList<BaseCommand>

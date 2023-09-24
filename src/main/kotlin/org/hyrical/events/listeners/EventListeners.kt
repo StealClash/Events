@@ -1,7 +1,11 @@
 package org.hyrical.events.listeners
 
 import org.bukkit.Bukkit
+import org.bukkit.Color
+import org.bukkit.FireworkEffect
 import org.bukkit.GameMode
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -54,11 +58,13 @@ object EventListeners : Listener {
     fun join(event: PlayerJoinEvent){
         val player = event.player
 
-        event.joinMessage = "&b${player.name} &f&ohas joined the server!"
+        event.joinMessage = translate("&b${player.name} &f&ohas joined the server!")
 
         if (EventManager.spectators.contains(player.uniqueId)){
             player.gameMode = GameMode.SPECTATOR
         }
+        player.teleport(Spawn.getSpawnLocation())
+
     }
 
     @EventHandler
@@ -95,18 +101,56 @@ object EventListeners : Listener {
         object : BukkitRunnable(){
             override fun run() {
                 player.spigot().respawn()
+                player.teleport(deathLocation)
             }
-        }.runTaskLater(EventsServer.instance, 1L)
+        }.runTaskLater(EventsServer.instance, 10L)
 
         player.gameMode = GameMode.SPECTATOR
 
         player.sendTitle(translate("&c&lYOU DIED!"), translate("&fYou have been killed. You are now spectating."))
 
-        object : BukkitRunnable(){
-            override fun run() {
-                player.teleport(deathLocation)
-            }
-        }.runTaskLater(EventsServer.instance, 1L)
+        if (EventManager.alivePlayers.size == 1){
+            val damager = Bukkit.getPlayer(EventManager.alivePlayers.first())!!
+
+            Bukkit.broadcastMessage("")
+            Bukkit.broadcastMessage("")
+            Bukkit.broadcastMessage(translate("&a&l${damager.name} &fhas won the event!"))
+            Bukkit.broadcastMessage(translate("&a&l${damager.name} &fhas won the event!"))
+            Bukkit.broadcastMessage(translate("&a&l${damager.name} &fhas won the event!"))
+            Bukkit.broadcastMessage("")
+            Bukkit.broadcastMessage("")
+            damager.sendTitle(translate("&a&lYOU WON!"), translate("&fYou won! Make a ticket for the prize."))
+
+            BuildManager.disableBuilding()
+            CombatManager.disableCombat()
+
+            var x = 0
+
+            object : BukkitRunnable(){
+                override fun run(){
+                    val fireworksLocation = damager.location.clone()
+
+                    for (i in 1..5) {
+                        val firework = fireworksLocation.world.spawnEntity(fireworksLocation, EntityType.FIREWORK) as Firework
+                        val meta = firework.fireworkMeta
+                        meta.addEffect(
+                            FireworkEffect.builder()
+                                .withColor(Color.RED)
+                                .with(FireworkEffect.Type.BALL_LARGE)
+                                .flicker(true)
+                                .trail(true)
+                                .build())
+                        meta.power = 1
+                        firework.fireworkMeta = meta
+                    }
+                    x++
+
+                    if (x == 5){
+                        cancel()
+                    }
+                }
+            }.runTaskTimer(EventsServer.instance, 0L, 15L)
+        }
     }
 
     @EventHandler

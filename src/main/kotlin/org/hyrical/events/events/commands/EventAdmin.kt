@@ -11,6 +11,7 @@ import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.EventObject
 import org.hyrical.events.events.gui.EventsGUI
+import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.translate
 
 @CommandAlias("event-admin")
@@ -25,13 +26,13 @@ object EventAdmin : BaseCommand() {
     }
 
     @Subcommand("setteleportlocations")
-    fun setTeleport(player: Player, @Single @Name("event") eventName: String, @Name("number") number: Int){
+    fun setTeleport(player: Player, @Single @Name("event") eventName: String, @Name("number") number: Int) {
 
-        if (number == 1){
+        if (number == 1) {
             val eventObject = EventObject(eventName, location1 = player.location, null)
 
             EventManager.serializeEvent(eventObject)
-        } else if (number == 2){
+        } else if (number == 2) {
             val eventObject = EventObject(eventName, null, location2 = player.location)
 
             EventManager.serializeEvent(eventObject)
@@ -41,6 +42,48 @@ object EventAdmin : BaseCommand() {
         }
 
         player.sendMessage(translate("&asaved locations for $number"))
+    }
+
+    @Subcommand("stop")
+    fun stopEvent(player: Player){
+        if (EventManager.currentEvent == null) return
+
+        EventManager.currentEvent = null
+        EventManager.timeLeft = 0L
+        EventManager.baseTime = 0L
+        EventManager.alivePlayers.clear()
+        EventManager.spectators.clear()
+
+        for (p in Bukkit.getOnlinePlayers()){
+            p.teleport(Spawn.getSpawnLocation())
+            p.gameMode = GameMode.SURVIVAL
+        }
+
+        Bukkit.broadcastMessage("")
+        Bukkit.broadcastMessage(translate("&cThe event has been forcefully stopped!"))
+        Bukkit.broadcastMessage("")
+    }
+
+    @Subcommand("alive")
+    fun alive(player: Player){
+        player.sendMessage("")
+        player.sendMessage(translate("&aAlive Players:"))
+        player.sendMessage("")
+        for (alive in EventManager.alivePlayers){
+            player.sendMessage(translate("&f- &a${Bukkit.getPlayer(alive)?.name}"))
+        }
+        player.sendMessage("")
+    }
+
+    @Subcommand("dead")
+    fun dead(player: Player){
+        player.sendMessage("")
+        player.sendMessage(translate("&cDead Players:"))
+        player.sendMessage("")
+        for (alive in EventManager.spectators){
+            player.sendMessage(translate("&f- &c${Bukkit.getPlayer(alive)?.name}"))
+        }
+        player.sendMessage("")
     }
 
     @Subcommand("scatter")
@@ -71,6 +114,20 @@ object EventAdmin : BaseCommand() {
 
         target.gameMode = GameMode.SURVIVAL
         scatter(target, EventManager.currentEvent!!.getName())
+        player.sendMessage(translate("&aRevived that player."))
+    }
+
+    @Subcommand("tpalive")
+    fun tpalive(player: Player, @Name("player") target: Player){
+        if (EventManager.currentEvent == null) return
+
+        for (alive in EventManager.alivePlayers){
+            val alivePlayer = Bukkit.getPlayer(alive) ?: continue
+
+            alivePlayer.teleport(player.location)
+        }
+
+        player.sendMessage(translate("&aTeleported all alive players to you."))
     }
 
     fun scatter(p: Player, eventName: String){
@@ -86,12 +143,17 @@ object EventAdmin : BaseCommand() {
                 var randomX = 0.0
                 var randomZ = 0.0
 
-                if (x < lX && z < lZ){
-                    randomX = EventsServer.RANDOM.nextDouble(x, lX)
-                    randomZ = EventsServer.RANDOM.nextDouble(z, lZ)
+                randomX = if (x < lX){
+                    EventsServer.RANDOM.nextDouble(x, lX)
                 } else {
-                    randomX = EventsServer.RANDOM.nextDouble(lX, x)
-                    randomZ = EventsServer.RANDOM.nextDouble(lZ, z)
+                    EventsServer.RANDOM.nextDouble(lX, x)
+
+                }
+
+                randomZ = if (z < lZ){
+                    EventsServer.RANDOM.nextDouble(z, lZ)
+                } else {
+                    EventsServer.RANDOM.nextDouble(lZ, z)
                 }
 
 

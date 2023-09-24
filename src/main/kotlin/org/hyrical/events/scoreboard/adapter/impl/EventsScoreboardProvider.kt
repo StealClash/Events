@@ -20,7 +20,7 @@ class EventsScoreboardProvider : ScoreboardAdapter {
 
         lines.add("")
         if (EventManager.currentEvent != null){
-            lines.add(" &#FBC504⛃ &fEvent: &#FBC504${convertToSmallCapsFont(EventManager.currentEvent!!.getName())}")
+            lines.add(" &#FBC504⛃ &fEvent: &#FBC504${convertToSmallCapsFont(EventManager.currentEvent!!.getDisplayName())}")
         } else {
             lines.add(" &#FBC504⛃ &fEvent: &#FBC504None")
         }

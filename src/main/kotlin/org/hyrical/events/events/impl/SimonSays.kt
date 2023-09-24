@@ -4,14 +4,14 @@ import co.aikar.commands.BaseCommand
 import org.bukkit.event.Listener
 import org.hyrical.events.events.Event
 
-object CrystalFFA : Event() {
+object SimonSays : Event() {
 
     override fun getName(): String {
-        return "CrystalFFA"
+        return "SimonSays"
     }
 
     override fun getDisplayName(): String {
-        return "Crystal FFA"
+        return "Simon Says"
     }
 
     override fun getScoreboardLines(): MutableList<String> {

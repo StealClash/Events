@@ -17,6 +17,8 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.lucko.me/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven ("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+
 }
 
 dependencies {
@@ -26,6 +28,7 @@ dependencies {
 
     implementation("com.github.Nopock:Store:4.25")
     implementation("com.github.cryptomorin:XSeries:9.5.0") { isTransitive = false }
+    compileOnly("me.clip:placeholderapi:2.11.3")
 
 }
 

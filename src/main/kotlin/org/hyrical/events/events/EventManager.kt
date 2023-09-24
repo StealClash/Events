@@ -2,8 +2,10 @@ package org.hyrical.events.events
 
 import co.aikar.commands.PaperCommandManager
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.impl.CrystalFFA
+import org.hyrical.events.events.impl.SimonSays
 import org.hyrical.events.utils.saveToConfig
 import java.util.UUID
 
@@ -21,6 +23,7 @@ object EventManager {
 
     fun init(acf: PaperCommandManager){
         events.add(CrystalFFA)
+        events.add(SimonSays)
 
         for (event in events){
             for (command in event.getCommands()){
@@ -54,6 +57,8 @@ object EventManager {
         spectators.clear()
 
         for (player in Bukkit.getOnlinePlayers()){
+            if (player.gameMode == GameMode.CREATIVE) continue
+
             alivePlayers.add(player.uniqueId)
         }
 

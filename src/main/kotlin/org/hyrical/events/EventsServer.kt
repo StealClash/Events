@@ -4,8 +4,10 @@ import co.aikar.commands.PaperCommandManager
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.hyrical.events.commands.SpawnCommand
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
+import org.hyrical.events.expansion.EventsExpansion
 import org.hyrical.events.kits.KitsManager
 import org.hyrical.events.kits.kit.KitCommand
 import org.hyrical.events.listeners.EventListeners
@@ -30,15 +32,20 @@ class EventsServer : JavaPlugin() {
         EventManager.init(commandManager)
 
         commandManager.registerCommand(EventAdmin)
+        commandManager.registerCommand(SpawnCommand)
 
         registerListener(MenuListener)
         registerListener(EventListeners)
+
+        EventsExpansion().register()
 
         ScoreboardHandler.load()
     }
 
     override fun onDisable() {
         saveConfig()
+
+        EventsExpansion().unregister()
     }
 
     private fun registerListener(listener: Listener){
