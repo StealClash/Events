@@ -5,6 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.hyrical.events.commands.SpawnCommand
+import org.hyrical.events.commands.TPHereCommand
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
 import org.hyrical.events.expansion.EventsExpansion
@@ -33,6 +34,7 @@ class EventsServer : JavaPlugin() {
 
         commandManager.registerCommand(EventAdmin)
         commandManager.registerCommand(SpawnCommand)
+        commandManager.registerCommand(TPHereCommand)
 
         registerListener(MenuListener)
         registerListener(EventListeners)
