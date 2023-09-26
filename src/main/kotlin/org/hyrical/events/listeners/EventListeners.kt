@@ -93,6 +93,8 @@ object EventListeners : Listener {
             return
         }
 
+        if (EventManager.spectators.contains(player.uniqueId)) return
+
         val deathLocation = event.player.location
 
         EventManager.spectators.add(player.uniqueId)
@@ -147,6 +149,8 @@ object EventListeners : Listener {
 
                     if (x == 5){
                         cancel()
+
+                        EventManager.stopEvent()
                     }
                 }
             }.runTaskTimer(EventsServer.instance, 0L, 15L)

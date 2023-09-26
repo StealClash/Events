@@ -48,16 +48,7 @@ object EventAdmin : BaseCommand() {
     fun stopEvent(player: Player){
         if (EventManager.currentEvent == null) return
 
-        EventManager.currentEvent = null
-        EventManager.timeLeft = 0L
-        EventManager.baseTime = 0L
-        EventManager.alivePlayers.clear()
-        EventManager.spectators.clear()
-
-        for (p in Bukkit.getOnlinePlayers()){
-            p.teleport(Spawn.getSpawnLocation())
-            p.gameMode = GameMode.SURVIVAL
-        }
+        EventManager.stopEvent()
 
         Bukkit.broadcastMessage("")
         Bukkit.broadcastMessage(translate("&cThe event has been forcefully stopped!"))
