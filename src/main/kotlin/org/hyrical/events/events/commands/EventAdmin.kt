@@ -58,7 +58,7 @@ object EventAdmin : BaseCommand() {
     @Subcommand("alive")
     fun alive(player: Player){
         player.sendMessage("")
-        player.sendMessage(translate("&aAlive Players:"))
+        player.sendMessage(translate("&aAlive Players &7(${EventManager.alivePlayers.size}):"))
         player.sendMessage("")
         for (alive in EventManager.alivePlayers){
             player.sendMessage(translate("&f- &a${Bukkit.getPlayer(alive)?.name}"))
@@ -69,7 +69,7 @@ object EventAdmin : BaseCommand() {
     @Subcommand("dead")
     fun dead(player: Player){
         player.sendMessage("")
-        player.sendMessage(translate("&cDead Players:"))
+        player.sendMessage(translate("&cDead Players &7(${EventManager.spectators.size}):"))
         player.sendMessage("")
         for (alive in EventManager.spectators){
             player.sendMessage(translate("&f- &c${Bukkit.getPlayer(alive)?.name}"))
@@ -93,7 +93,7 @@ object EventAdmin : BaseCommand() {
     }
 
     @Subcommand("revive")
-    fun revive(player: Player, @Name("player") target: Player){
+    fun revive(player: Player, @Flags("other") @Name("player") target: Player){
         if (EventManager.currentEvent == null) return
         if (EventManager.alivePlayers.contains(target.uniqueId)){
             player.sendMessage(translate("&cThat player is currently alive."))

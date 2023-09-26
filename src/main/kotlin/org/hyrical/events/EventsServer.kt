@@ -4,6 +4,7 @@ import co.aikar.commands.PaperCommandManager
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.hyrical.events.commands.FreezeMovementCommand
 import org.hyrical.events.commands.SpawnCommand
 import org.hyrical.events.commands.TPHereCommand
 import org.hyrical.events.events.EventManager
@@ -35,9 +36,11 @@ class EventsServer : JavaPlugin() {
         commandManager.registerCommand(EventAdmin)
         commandManager.registerCommand(SpawnCommand)
         commandManager.registerCommand(TPHereCommand)
+        commandManager.registerCommand(FreezeMovementCommand)
 
         registerListener(MenuListener)
         registerListener(EventListeners)
+        registerListener(FreezeMovementCommand)
 
         EventsExpansion().register()
 

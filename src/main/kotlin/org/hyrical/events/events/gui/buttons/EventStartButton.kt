@@ -23,6 +23,7 @@ class EventStartButton(val event: Event) : Button() {
     override fun click(player: Player, slot: Int, clickType: ClickType, hotbarButton: Int) {
         EventManager.updateAlivePlayers()
         EventManager.currentEvent = event
+        event.startEvent()
 
         if (event.giveKitOnStart() == "") return
 

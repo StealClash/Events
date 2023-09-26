@@ -9,6 +9,7 @@ import org.hyrical.fastboard.FastBoard
 import org.hyrical.events.scoreboard.listeners.ScoreboardListener
 import org.hyrical.events.scoreboard.thread.ScoreboardThread
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 object ScoreboardHandler {
 
@@ -18,7 +19,7 @@ object ScoreboardHandler {
         EventsServer.instance.logger.info("[Scoreboard] Scoreboard loaded succesfully")
     }
 
-    val boards = mutableMapOf<UUID, EventsScoreboard>()
+    val boards = ConcurrentHashMap<UUID, EventsScoreboard>()
     val adapter: ScoreboardAdapter = EventsScoreboardProvider()
 
     fun create(player: Player){

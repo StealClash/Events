@@ -63,7 +63,11 @@ object EventListeners : Listener {
         if (EventManager.spectators.contains(player.uniqueId)){
             player.gameMode = GameMode.SPECTATOR
         }
-        player.teleport(Spawn.getSpawnLocation())
+        object : BukkitRunnable(){
+            override fun run() {
+                player.teleport(Spawn.getSpawnLocation())
+            }
+        }.runTaskLater(EventsServer.instance, 5L)
 
     }
 
