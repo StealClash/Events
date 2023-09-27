@@ -4,16 +4,8 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class SumoGameLoopTask : BukkitRunnable(){
 
-    var firstTime: Boolean = true
-
     override fun run() {
-        if (firstTime){
-            firstTime = false
 
-
-
-            return
-        }
     }
 
 

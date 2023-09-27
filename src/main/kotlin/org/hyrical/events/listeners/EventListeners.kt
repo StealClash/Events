@@ -22,6 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
+import org.hyrical.events.listeners.customevents.EventKill
 import org.hyrical.events.managers.BuildManager
 import org.hyrical.events.managers.CombatManager
 import org.hyrical.events.utils.Spawn
@@ -112,6 +113,8 @@ object EventListeners : Listener {
         }.runTaskLater(EventsServer.instance, 10L)
 
         player.gameMode = GameMode.SPECTATOR
+
+        Bukkit.getPluginManager().callEvent(EventKill(event.player.killer!!, event.player))
 
         player.sendTitle(translate("&c&lYOU DIED!"), translate("&fYou have been killed. You are now spectating."))
 
