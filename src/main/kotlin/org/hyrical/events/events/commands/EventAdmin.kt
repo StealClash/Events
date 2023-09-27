@@ -6,10 +6,9 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
-import org.hyrical.events.events.EventObject
+import org.hyrical.events.events.impl.sumo.utils.EventObject
 import org.hyrical.events.events.gui.EventsGUI
 import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.translate
