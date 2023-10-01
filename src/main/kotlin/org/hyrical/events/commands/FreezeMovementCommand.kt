@@ -24,15 +24,16 @@ object FreezeMovementCommand : BaseCommand(), Listener {
         ) + "You have " + if (isFrozen) "enabled" else "disabled" + " server movement."))
 
         if (isFrozen){
-            Bukkit.broadcastMessage("&cThe server has been frozen.")
+            Bukkit.broadcastMessage(translate("&cThe server has been frozen."))
         } else {
-            Bukkit.broadcastMessage("&aThe server has been unfrozen.")
+            Bukkit.broadcastMessage(translate("&aThe server has been unfrozen."))
         }
     }
 
     @EventHandler
     fun move(event: PlayerMoveEvent){
         if (event.from.blockX == event.to.getBlockX() && event.from.blockY == event.to.blockY && event.from.blockZ == event.to.blockZ) return
+        if (!isFrozen) return
 
         event.to = event.from
         event.player.sendMessage(translate("&cThe server is currently frozen."))

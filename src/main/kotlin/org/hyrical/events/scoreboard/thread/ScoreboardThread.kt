@@ -7,7 +7,7 @@ class ScoreboardThread : Thread() {
     override fun run() {
         while (true) {
             try {
-                sleep(750)
+                sleep(500)
                 tick()
             } catch (e: InterruptedException) {
                 e.printStackTrace()

@@ -44,6 +44,8 @@ object RLGL : Event() {
     }
 
     override fun startEvent() {
+        return
+
         mainGameTimer = 120
 
         gameLoopTask = object : BukkitRunnable() {

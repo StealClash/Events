@@ -8,8 +8,9 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
-import org.hyrical.events.events.impl.sumo.utils.EventObject
+import org.hyrical.events.events.EventObject
 import org.hyrical.events.events.gui.EventsGUI
+import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.translate
 
@@ -46,6 +47,11 @@ object EventAdmin : BaseCommand() {
     @Subcommand("stop")
     fun stopEvent(player: Player){
         if (EventManager.currentEvent == null) return
+
+        if (EventManager.currentEvent is TNTTag){
+            TNTTag.task1?.cancel()
+            TNTTag.task1 = null
+        }
 
         EventManager.stopEvent()
 

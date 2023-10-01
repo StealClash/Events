@@ -6,6 +6,7 @@ import org.bukkit.GameMode
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.impl.CrystalFFA
 import org.hyrical.events.events.impl.SimonSays
+import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.saveToConfig
 import java.util.UUID
@@ -25,6 +26,7 @@ object EventManager {
     fun init(acf: PaperCommandManager){
         events.add(CrystalFFA)
         events.add(SimonSays)
+        events.add(TNTTag)
 
         for (event in events){
             for (command in event.getCommands()){
@@ -71,15 +73,17 @@ object EventManager {
     }
 
     fun stopEvent(){
-        EventManager.currentEvent = null
-        EventManager.timeLeft = 0L
-        EventManager.baseTime = 0L
-        EventManager.alivePlayers.clear()
-        EventManager.spectators.clear()
+        currentEvent = null
+        timeLeft = 0L
+        baseTime = 0L
+        alivePlayers.clear()
+        spectators.clear()
 
         for (p in Bukkit.getOnlinePlayers()){
             p.teleport(Spawn.getSpawnLocation())
             p.gameMode = GameMode.SURVIVAL
+
+            p.inventory.clear()
         }
     }
 }
