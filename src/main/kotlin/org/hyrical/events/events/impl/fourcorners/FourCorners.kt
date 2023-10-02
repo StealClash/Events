@@ -1,15 +1,31 @@
 package org.hyrical.events.events.impl.fourcorners
 
 import co.aikar.commands.BaseCommand
+import me.clip.placeholderapi.util.TimeUtil
 import org.bukkit.event.Listener
 import org.hyrical.events.events.Event
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import org.hyrical.events.EventsServer
+import org.hyrical.events.utils.TimeUtils
+import kotlin.random.Random
 
 object FourCorners : Event() {
     val world = Bukkit.getWorld("fourcorners")!!
+
+    val tasks: MutableMap<Int, BukkitTask?> = mutableMapOf()
+
+    val cornerSelectingTime = 10
+    val timeTillDrop = 5
+    val timeTillNextRound = 3
+
+    var info = ""
+    var currentTime = 0
+
+    var removedCorner: CornerType = CornerType.BLUE
 
     override fun getName(): String {
         return "fourcorners"
@@ -29,6 +45,124 @@ object FourCorners : Event() {
 
     override fun getListeners(): ArrayList<Listener> {
         return arrayListOf()
+    }
+
+    override fun startEvent() {
+        gameIntermission()
+    }
+
+    override fun endEvent() {
+        for ((key, task) in tasks){
+            task?.cancel()
+        }
+    }
+
+    fun gameIntermission(){
+        currentTime = cornerSelectingTime
+        info = "  Pick a Corner&7: &e${TimeUtils.formatDuration(currentTime * 1000L)}"
+        tasks[1] = object : BukkitRunnable() {
+            override fun run() {
+                info = "  Pick a Corner&7: &e${TimeUtils.formatDuration(currentTime * 1000L)}"
+
+                if (currentTime == 0){
+                    removeMiddle()
+                    pickCornerIntermission()
+
+                    tasks[1] = null
+                    cancel()
+                    return
+                }
+
+                currentTime--
+            }
+        }.runTaskTimer(EventsServer.instance, 0L, 20L)
+    }
+
+    fun pickCornerIntermission(){
+        currentTime = timeTillDrop
+        info = "  Drop in&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
+        tasks[2] = object : BukkitRunnable() {
+            override fun run() {
+                info = "  Drop in&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
+
+                if (currentTime == 0){
+                    val availableCorners = CornerType.entries.toTypedArray()
+                    val randomCorner = availableCorners[Random.nextInt(0, availableCorners.size)]
+
+                    removedCorner = randomCorner
+
+                    when (randomCorner){
+                        CornerType.BLUE -> {
+                            removeBlueCorner()
+                        }
+
+                        CornerType.RED -> {
+                            removeRedCorner()
+                        }
+                        CornerType.GREEN -> {
+                            removeGreenCorner()
+                        }
+                        CornerType.YELLOW -> {
+                            removeYellowCorner()
+                        }
+                    }
+
+                    nextRoundIntermission()
+
+                    tasks[2] = null
+                    cancel()
+                    return
+                }
+
+                currentTime--
+            }
+        }.runTaskTimer(EventsServer.instance, 0L, 20L)
+    }
+
+    fun nextRoundIntermission(){
+
+        currentTime = timeTillNextRound
+        info = "  Next Round&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
+        tasks[3] = object : BukkitRunnable() {
+            override fun run() {
+                info = "  Next Round&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
+
+                if (currentTime == 0){
+                    when (removedCorner){
+                        CornerType.BLUE -> {
+                            addBlueCorner()
+                        }
+
+                        CornerType.RED -> {
+                            addRedCorner()
+                        }
+                        CornerType.GREEN -> {
+                            addGreenCorner()
+                        }
+                        CornerType.YELLOW -> {
+                            addYellowCorner()
+                        }
+                    }
+
+                    addMiddle()
+                    gameIntermission()
+
+                    tasks[3] = null
+                    cancel()
+                    return
+                }
+
+                currentTime--
+            }
+        }.runTaskTimer(EventsServer.instance, 0L, 20L)
+    }
+
+    fun addMiddle(){
+
+    }
+
+    fun removeMiddle(){
+
     }
 
     fun addRedCorner(){
