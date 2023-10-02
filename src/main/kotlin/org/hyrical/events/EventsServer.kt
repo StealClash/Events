@@ -51,6 +51,12 @@ class EventsServer : JavaPlugin() {
         saveConfig()
 
         EventsExpansion().unregister()
+
+        for (player in EventManager.alivePlayers){
+            val plr = Bukkit.getPlayer(player) ?: continue
+
+            plr.inventory.clear()
+        }
     }
 
     private fun registerListener(listener: Listener){

@@ -25,6 +25,8 @@ class EventStartButton(val event: Event) : Button() {
         EventManager.currentEvent = event
         event.startEvent()
 
+        Bukkit.getServer().setWhitelist(true)
+
         if (event.giveKitOnStart() == "") return
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kit all ${event.giveKitOnStart()} ${player.name}")

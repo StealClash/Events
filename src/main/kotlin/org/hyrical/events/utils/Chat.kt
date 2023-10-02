@@ -25,6 +25,10 @@ object Chat {
     }
 }
 
+fun String.extractLastHexCode(): String {
+    return this.replace(" ", "").split("").reversed().take(8).reversed().joinToString("")
+}
+
 fun translate(message: String): String{
     val HEX_PATTERN: Pattern = Pattern.compile("&#([0-9A-Fa-f]{6})") // Updated regex pattern
     val matcher: Matcher = HEX_PATTERN.matcher(message)

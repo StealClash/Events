@@ -17,5 +17,6 @@ abstract class Event {
     open fun giveKitOnStart(): String { return "" }
 
     open fun startEvent(){}
+    open fun endEvent(){}
 
 }

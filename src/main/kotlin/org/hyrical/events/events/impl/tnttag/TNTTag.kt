@@ -8,6 +8,7 @@ import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
@@ -25,18 +26,22 @@ import java.util.concurrent.TimeUnit
 
 object TNTTag : Event() {
 
+    val debugMode = false
+
     var hasStarted = false
+    var stopped = false
     var tntPlayers: MutableList<Player> = mutableListOf()
 
     var roundStarted = 0L
     var timeBetweenMatches = 5
     var round = 0
 
-    val tntInfo: MutableMap<Int, Int> = mutableMapOf(1 to 1, 2 to 4, 3 to 4, 4 to 3, 5 to 3, 6 to 3, 7 to 2, 8 to 1, 9 to 1, 10 to 1, 11 to 1) // Round -> Chosen Players
-    val baseTime: MutableMap<Int, Int> = mutableMapOf(1 to 50, 2 to 50, 3 to 45, 4 to 40, 5 to 30, 6 to 25, 7 to 20, 8 to 15, 9 to 15, 10 to 15, 11 to 15) // Round -> Time
+    val tntInfo: MutableMap<Int, Int> = mutableMapOf(50 to 5, 40 to 4, 30 to 4, 20 to 3, 10 to 2, 2 to 1)
+    val baseTime: MutableMap<Int, Int> = mutableMapOf(1 to 50, 2 to 50, 3 to 45, 4 to 40, 5 to 35, 6 to 30, 7 to 30, 8 to 30, 9 to 25, 10 to 20, 11 to 20) // Round -> Time
     val teleport: MutableList<Int> = mutableListOf(1, 5, 6, 7, 8,9, 10, 11)
 
     var task1: BukkitTask? = null
+    var task2: BukkitTask? = null
 
     override fun getName(): String {
         return "tnttag"
@@ -47,8 +52,8 @@ object TNTTag : Event() {
     }
 
     override fun getScoreboardLines(): MutableList<String> {
-        if (TimeUtils.formatDuration((roundStarted + getBaseTime()) - System.currentTimeMillis()) == "") return mutableListOf("", "  &fExplosion in &c0s")
-        return mutableListOf("", "  &fExplosion in &c" + TimeUtils.formatDuration((roundStarted + getBaseTime()) - System.currentTimeMillis()) )
+        if (TimeUtils.formatDuration((roundStarted + getBaseTime()) - System.currentTimeMillis()) == "") return mutableListOf("", "  &fExplosion in &c0s", "  &fRound: &e${round}")
+        return mutableListOf("", "  &fExplosion in &c" + TimeUtils.formatDuration((roundStarted + getBaseTime()) - System.currentTimeMillis()), "  &fRound: &e${round}")
     }
 
     override fun getCommands(): ArrayList<BaseCommand> {
@@ -60,6 +65,7 @@ object TNTTag : Event() {
     }
 
     override fun startEvent() {
+        stopped = false
         round = 0
         CombatManager.enableCombat()
 
@@ -81,25 +87,28 @@ object TNTTag : Event() {
         timeBetweenMatches = 5
         round = 0
 
+        stopped = true
+
         task1?.cancel()
         task1 = null
+
+        if (task2 != null){
+
+            task2?.cancel()
+        }
+        task2 = null
     }
 
     fun startRound(){
+        if (stopped){
+            return
+        }
+        if (EventManager.alivePlayers.size == 1) return
+
         hasStarted = true
 
         chooseTNTS()
-
-        for (player in Bukkit.getOnlinePlayers()){
-            if (teleport.contains(round)){
-                EventAdmin.scatter(player, "tnttag")
-            }
-
-            if (tntPlayers.contains(player)) continue
-            if (!EventManager.alivePlayers.contains(player.uniqueId)) continue
-
-            applyRunner(player)
-        }
+        chooseRunners()
 
         Bukkit.broadcastMessage("")
         Bukkit.broadcastMessage(translate("&c&lTNT TAG"))
@@ -110,6 +119,11 @@ object TNTTag : Event() {
 
         task1 = object : BukkitRunnable(){
             override fun run(){
+                if (stopped){
+                    cancel()
+                    return
+                }
+
                 for (player in tntPlayers){
                     player.location.world.strikeLightningEffect(player.location)
                     player.location.world.spawnParticle(Particle.EXPLOSION_HUGE, player.location, 1, 0.0, 0.0, 0.0, 0.0)
@@ -119,7 +133,7 @@ object TNTTag : Event() {
 
                     player.sendMessage(translate("&eYou blew up!"))
 
-                    for (plr in getPlayersInRadius(player, 2.0)){
+                    for (plr in getPlayersInRadius(player, 1.0)){
                         player.inventory.clear()
                         plr.health = 0.0
                         plr.sendMessage(translate("&eYou were blown up by another TNTer!"))
@@ -136,10 +150,13 @@ object TNTTag : Event() {
     }
 
     fun chooseTNTS(){
-        val players: MutableList<Player> = mutableListOf()
-        players.addAll(Bukkit.getOnlinePlayers())
+        val players: ArrayList<Player> = arrayListOf()
 
-        println(getTNTAmount())
+        for (player in EventManager.alivePlayers){
+            players.add(Bukkit.getPlayer(player)!!)
+        }
+
+        players.removeIf { !EventManager.alivePlayers.contains(it.uniqueId)  }
 
         for (i in 1..getTNTAmount()){
             if (players.isEmpty()) continue
@@ -153,12 +170,25 @@ object TNTTag : Event() {
         }
     }
 
+    fun chooseRunners(){
+        for (player in Bukkit.getOnlinePlayers()){
+            if (teleport.contains(round) || round >= 12){
+                EventAdmin.scatter(player, "tnttag")
+            }
+
+            if (tntPlayers.contains(player)) continue
+            if (!EventManager.alivePlayers.contains(player.uniqueId)) continue
+
+            applyRunner(player)
+        }
+    }
+
     fun applyTNT(player: Player){
         player.inventory.clear()
-        player.inventory.helmet = ItemBuilder.of(Material.TNT).enchant(Enchantment.DAMAGE_ALL, 1).build()
+        player.inventory.helmet = ItemBuilder.of(Material.TNT).enchant(Enchantment.KNOCKBACK, 1).flag(ItemFlag.HIDE_ENCHANTS).build()
 
         for (i in 0..8){
-            player.inventory.setItem(i, ItemBuilder.of(Material.TNT).enchant(Enchantment.DAMAGE_ALL, 1).build())
+            player.inventory.setItem(i, ItemBuilder.of(Material.TNT).enchant(Enchantment.KNOCKBACK, 1).flag(ItemFlag.HIDE_ENCHANTS).build())
         }
 
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Int.MAX_VALUE,3,false, false))
@@ -183,13 +213,15 @@ object TNTTag : Event() {
     }
 
     fun getTNTAmount(): Int {
-        val valueForKey = tntInfo[round]
+        val players = EventManager.alivePlayers.size
 
-        if (valueForKey != null) {
-            return valueForKey
+        for ((key, value) in tntInfo){
+            if (players >= key){
+                return value
+            }
         }
-        Bukkit.broadcastMessage("LOL")
-        return 0
+
+        return 1
     }
 
     fun getBaseTime(): Long {
@@ -199,8 +231,6 @@ object TNTTag : Event() {
             return TimeUnit.SECONDS.toMillis(valueForKey.toLong())
         }
 
-        Bukkit.broadcastMessage("lol")
-
-        return 0L
+        return TimeUnit.SECONDS.toMillis(20L)
     }
 }

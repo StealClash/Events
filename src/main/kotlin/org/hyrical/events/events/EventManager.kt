@@ -3,9 +3,11 @@ package org.hyrical.events.events
 import co.aikar.commands.PaperCommandManager
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.potion.PotionEffectType
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.impl.CrystalFFA
 import org.hyrical.events.events.impl.SimonSays
+import org.hyrical.events.events.impl.spleef.Spleef
 import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.saveToConfig
@@ -27,6 +29,7 @@ object EventManager {
         events.add(CrystalFFA)
         events.add(SimonSays)
         events.add(TNTTag)
+        events.add(Spleef)
 
         for (event in events){
             for (command in event.getCommands()){
@@ -60,7 +63,7 @@ object EventManager {
         spectators.clear()
 
         for (player in Bukkit.getOnlinePlayers()){
-            if (player.gameMode == GameMode.CREATIVE) continue
+            if (player.gameMode == GameMode.CREATIVE || player.gameMode == GameMode.SPECTATOR) continue
 
             alivePlayers.add(player.uniqueId)
         }
@@ -73,6 +76,7 @@ object EventManager {
     }
 
     fun stopEvent(){
+        currentEvent?.endEvent()
         currentEvent = null
         timeLeft = 0L
         baseTime = 0L
@@ -84,6 +88,7 @@ object EventManager {
             p.gameMode = GameMode.SURVIVAL
 
             p.inventory.clear()
+            p.removePotionEffect(PotionEffectType.SPEED)
         }
     }
 }

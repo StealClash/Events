@@ -15,12 +15,23 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.inventory.ItemFlag
+import org.bukkit.potion.PotionEffectType
 import org.hyrical.events.events.EventManager
+import org.hyrical.events.events.commands.EventAdmin
 import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.utils.ItemBuilder
 import org.hyrical.events.utils.translate
 
 class TNTListener : Listener {
+
+    @EventHandler
+    fun join(event: PlayerJoinEvent){
+        event.player.removePotionEffect(PotionEffectType.SPEED)
+    }
 
     @EventHandler
     fun damage(event: EntityDamageByEntityEvent){
@@ -33,7 +44,7 @@ class TNTListener : Listener {
         val victim = event.entity as Player
 
         if (!TNTTag.tntPlayers.contains(damager)) return
-        if (damager.itemInHand != ItemBuilder.of(Material.TNT).enchant(Enchantment.DAMAGE_ALL, 1).build()) return
+        if (damager.itemInHand != ItemBuilder.of(Material.TNT).enchant(Enchantment.KNOCKBACK, 1).flag(ItemFlag.HIDE_ENCHANTS).build()) return
         if (TNTTag.tntPlayers.contains(damager) && TNTTag.tntPlayers.contains(victim)) {
             event.isCancelled = true
             return
@@ -49,17 +60,12 @@ class TNTListener : Listener {
     }
 
     @EventHandler
-    fun damage(event: EntityDamageEvent){
-        if (event.entity !is Player) return
-
-        if (event.cause == DamageCause.VOID){
+    fun playerMoveEvent(event: PlayerMoveEvent){
+        if (event.player.location.y <= -66){
             if (EventManager.currentEvent == null) return
             if (EventManager.currentEvent !is TNTTag) return
 
-            val player = event.entity as Player
-
-            event.isCancelled = true
-            player.teleport(Location(player.world, 0.5,-35.5,0.5,0.0f,0.0f))
+            EventAdmin.scatter(event.player, "tnttag")
         }
     }
 
@@ -68,8 +74,7 @@ class TNTListener : Listener {
         if (EventManager.currentEvent != null && EventManager.currentEvent is TNTTag){
             val clickedInventory = event.clickedInventory
 
-            if (clickedInventory != null && clickedInventory.equals(event.whoClicked.getInventory())) {
-
+            if (clickedInventory != null && clickedInventory == event.whoClicked.inventory) {
                 event.isCancelled = true
             }
         }
@@ -86,6 +91,13 @@ class TNTListener : Listener {
     fun deathEvent(event: PlayerDeathEvent){
         if (EventManager.currentEvent != null && EventManager.currentEvent is TNTTag){
             event.drops.clear()
+        }
+    }
+
+    @EventHandler
+    fun swapOffhand(event: PlayerSwapHandItemsEvent){
+        if (EventManager.currentEvent != null && EventManager.currentEvent is TNTTag){
+            event.isCancelled = true
         }
     }
 }

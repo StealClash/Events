@@ -30,6 +30,9 @@ dependencies {
     implementation("com.github.cryptomorin:XSeries:9.5.0") { isTransitive = false }
     compileOnly("me.clip:placeholderapi:2.11.3")
 
+    compileOnly("net.luckperms:api:5.4")
+
+    implementation(fileTree("lib") { include("*.jar") })
 }
 
 tasks.withType<KotlinCompile> {

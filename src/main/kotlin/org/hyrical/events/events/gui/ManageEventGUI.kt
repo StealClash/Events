@@ -7,10 +7,7 @@ import org.hyrical.events.EventsServer
 import org.hyrical.events.utils.menus.Button
 import org.hyrical.events.utils.menus.Menu
 import org.hyrical.events.events.Event
-import org.hyrical.events.events.gui.buttons.EventStartButton
-import org.hyrical.events.events.gui.buttons.PvpButton
-import org.hyrical.events.events.gui.buttons.ScatterButton
-import org.hyrical.events.events.gui.buttons.TimeMenuButton
+import org.hyrical.events.events.gui.buttons.*
 
 class ManageEventGUI(val event: Event) : Menu() {
 
@@ -25,9 +22,10 @@ class ManageEventGUI(val event: Event) : Menu() {
     override fun getButtons(player: Player): MutableMap<Int, Button> {
         val buttons: MutableMap<Int, Button> = mutableMapOf()
 
-        buttons[13] = ScatterButton(event)
-        buttons[11] = EventStartButton(event)
+        buttons[11] = ScatterButton(event)
+        buttons[13] = EventStartButton(event)
         buttons[15] = TimeMenuButton(event)
+        buttons[17] = SetNameButton(event)
 
         return buttons
     }

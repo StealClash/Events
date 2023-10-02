@@ -18,10 +18,12 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.scheduler.BukkitRunnable
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
+import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.listeners.customevents.EventKill
 import org.hyrical.events.managers.BuildManager
 import org.hyrical.events.managers.CombatManager
@@ -81,12 +83,21 @@ object EventListeners : Listener {
         if (EventManager.currentEvent != null && EventManager.alivePlayers.contains(player.uniqueId)){
             EventManager.alivePlayers.remove(player.uniqueId)
             EventManager.spectators.add(player.uniqueId)
+
+            player.inventory.clear()
         }
     }
 
     @EventHandler
     fun hungerEvent(event: FoodLevelChangeEvent){
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun respawn(event: PlayerRespawnEvent){
+        if (EventManager.currentEvent == null){
+            event.player.teleport(Spawn.getSpawnLocation())
+        }
     }
 
     @EventHandler
@@ -105,6 +116,10 @@ object EventListeners : Listener {
         EventManager.spectators.add(player.uniqueId)
         EventManager.alivePlayers.remove(player.uniqueId)
 
+        if (EventManager.currentEvent is TNTTag){
+            event.deathMessage = translate("&b${player.name} &7was blown up.")
+        }
+
         object : BukkitRunnable(){
             override fun run() {
                 player.spigot().respawn()
@@ -113,8 +128,6 @@ object EventListeners : Listener {
         }.runTaskLater(EventsServer.instance, 10L)
 
         player.gameMode = GameMode.SPECTATOR
-
-        Bukkit.getPluginManager().callEvent(EventKill(event.player.killer!!, event.player))
 
         player.sendTitle(translate("&c&lYOU DIED!"), translate("&fYou have been killed. You are now spectating."))
 
@@ -134,6 +147,10 @@ object EventListeners : Listener {
             CombatManager.disableCombat()
 
             var x = 0
+
+            if (EventManager.currentEvent is TNTTag){
+                TNTTag.stopRound()
+            }
 
             object : BukkitRunnable(){
                 override fun run(){

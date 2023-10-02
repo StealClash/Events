@@ -14,7 +14,7 @@ import org.hyrical.events.events.gui.ManageEventGUI
 class EventButton(val event: Event) : Button() {
     override fun getItem(player: Player): ItemStack {
         return ItemBuilder.of(Material.AMETHYST_SHARD)
-            .name(translate("&d&l${event.getName()}"))
+            .name(translate("&d&l${event.getDisplayName()}"))
             .addToLore("", "&fClick to configure this event.")
             .build()
     }
