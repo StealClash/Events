@@ -10,7 +10,7 @@ import org.hyrical.events.utils.translate
 
 class SetupSpleef : BaseCommand() {
 
-    val world = Bukkit.getWorld("spleef_world")
+    val world = Bukkit.getWorld("spleef_map")!!
 
     @CommandAlias("setupspleef")
     @CommandPermission("event.admin")

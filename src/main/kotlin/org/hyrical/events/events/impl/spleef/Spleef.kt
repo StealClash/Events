@@ -42,7 +42,7 @@ object Spleef : Event() {
     }
 
     override fun getCommands(): ArrayList<BaseCommand> {
-        return arrayListOf(SetupSpleef())
+        return arrayListOf()
     }
 
     override fun getListeners(): ArrayList<Listener> {

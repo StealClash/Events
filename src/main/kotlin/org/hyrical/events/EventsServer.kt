@@ -9,6 +9,7 @@ import org.hyrical.events.commands.SpawnCommand
 import org.hyrical.events.commands.TPHereCommand
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
+import org.hyrical.events.events.impl.fourcorners.FourCorners
 import org.hyrical.events.expansion.EventsExpansion
 import org.hyrical.events.kits.KitsManager
 import org.hyrical.events.kits.kit.KitCommand
@@ -51,6 +52,14 @@ class EventsServer : JavaPlugin() {
         saveConfig()
 
         EventsExpansion().unregister()
+
+        if (EventManager.currentEvent != null && EventManager.currentEvent is FourCorners){
+            FourCorners.addMiddle()
+            FourCorners.addRedCorner()
+            FourCorners.addGreenCorner()
+            FourCorners.addYellowCorner()
+            FourCorners.addBlueCorner()
+        }
 
         for (player in EventManager.alivePlayers){
             val plr = Bukkit.getPlayer(player) ?: continue

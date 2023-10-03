@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffectType
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.impl.CrystalFFA
 import org.hyrical.events.events.impl.SimonSays
+import org.hyrical.events.events.impl.fourcorners.FourCorners
 import org.hyrical.events.events.impl.spleef.Spleef
 import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.utils.Spawn
@@ -21,6 +22,7 @@ object EventManager {
     val events: ArrayList<Event> = arrayListOf()
 
     var currentEvent: Event? = null
+    var eventNameSet = "None"
 
     var baseTime: Long = 0L
     var timeLeft: Long = 0L
@@ -30,6 +32,7 @@ object EventManager {
         events.add(SimonSays)
         events.add(TNTTag)
         events.add(Spleef)
+        events.add(FourCorners)
 
         for (event in events){
             for (command in event.getCommands()){
