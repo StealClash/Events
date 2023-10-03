@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.impl.spleef.Spleef
@@ -48,6 +49,14 @@ class SpleefListener : Listener {
 
             event.player.health = 0.0
         }
+    }
+
+    @EventHandler
+    fun craft(event: CraftItemEvent){
+        if (EventManager.currentEvent == null) return
+        if (EventManager.currentEvent !is Spleef) return
+
+        event.isCancelled = true
     }
 
     @EventHandler

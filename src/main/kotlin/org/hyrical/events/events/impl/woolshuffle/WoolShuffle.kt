@@ -15,7 +15,9 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.hyrical.events.EventsServer
 import org.hyrical.events.events.Event
+import org.hyrical.events.events.EventManager
 import org.hyrical.events.utils.ItemBuilder
 
 object WoolShuffle : Event() {
@@ -25,6 +27,8 @@ object WoolShuffle : Event() {
     }
 
     val woolPicked = Material.PINK_WOOL
+    val currentTime = 0
+    val currentInfo = ""
 
     override fun getName(): String {
         return "woolshuffle"
@@ -48,7 +52,11 @@ object WoolShuffle : Event() {
 
     override fun startEvent() {
         resetWool()
-        giveWool()
+        for (alive in EventManager.alivePlayers){
+            val player = Bukkit.getPlayer(alive) ?: continue
+
+
+        }
     }
 
     fun resetWool(){

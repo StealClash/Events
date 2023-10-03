@@ -13,6 +13,7 @@ import com.sk89q.worldedit.world.block.BlockState
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.potion.PotionEffect
@@ -65,8 +66,9 @@ object Spleef : Event() {
     }
 
     fun applyKit(player: Player){
-        player.inventory.setItem(0, ItemBuilder.of(Material.DIAMOND_SHOVEL).unbreakable(true).build())
+        player.inventory.setItem(0, ItemBuilder.of(Material.DIAMOND_SHOVEL).enchant(Enchantment.DIG_SPEED, 5).unbreakable(true).build())
         player.addPotionEffect(PotionEffect(PotionEffectType.NIGHT_VISION, Int.MAX_VALUE,0,false,false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, Int.MAX_VALUE,1,false,false))
     }
 
     /*
