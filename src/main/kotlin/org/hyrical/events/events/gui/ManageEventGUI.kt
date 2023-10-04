@@ -22,10 +22,10 @@ class ManageEventGUI(val event: Event) : Menu() {
     override fun getButtons(player: Player): MutableMap<Int, Button> {
         val buttons: MutableMap<Int, Button> = mutableMapOf()
 
-        buttons[11] = ScatterButton(event)
-        buttons[13] = EventStartButton(event)
-        buttons[15] = TimeMenuButton(event)
-        buttons[17] = SetNameButton(event)
+        buttons[10] = EventStartButton(event)
+        buttons[12] = ScatterButton(event)
+        buttons[14] = TimeMenuButton(event)
+        buttons[16] = SetNameButton(event)
 
         return buttons
     }

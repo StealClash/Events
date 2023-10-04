@@ -113,6 +113,10 @@ object EventAdmin : BaseCommand() {
         player.sendMessage(translate("&aRevived that player."))
 
         EventManager.currentEvent!!.revive(target)
+        Bukkit.getOnlinePlayers().filter { it.hasPermission("op") }
+            .forEach { p ->
+                p.sendMessage(translate("&c[OP] &4${player.name} &fhas revived &4${target.name}&f."))
+            }
     }
 
     @Subcommand("tpalive")

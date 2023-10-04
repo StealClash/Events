@@ -32,7 +32,7 @@ dependencies {
 
     compileOnly("net.luckperms:api:5.4")
 
-    implementation(fileTree("lib") { include("*.jar") })
+    compileOnly(fileTree("lib") { include("*.jar") })
 }
 
 tasks.withType<KotlinCompile> {

@@ -10,8 +10,6 @@ import org.hyrical.events.utils.translate
 
 class SetupSpleef : BaseCommand() {
 
-    val world = Bukkit.getWorld("spleef_map")!!
-
     @CommandAlias("setupspleef")
     @CommandPermission("event.admin")
     fun setupSpleef(player: Player){
@@ -24,6 +22,8 @@ class SetupSpleef : BaseCommand() {
     }
 
     private fun teleport(player: Player, x: Int, y: Int, z: Int){
+        val world = Bukkit.getWorld("spleef_map")!!
+
         player.teleport(Location(world, x.toDouble(), y.toDouble(), z.toDouble()))
     }
 
