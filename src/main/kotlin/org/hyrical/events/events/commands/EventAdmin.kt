@@ -132,6 +132,18 @@ object EventAdmin : BaseCommand() {
         player.sendMessage(translate("&aTeleported all alive players to you."))
     }
 
+    @Subcommand("tpdead")
+    fun tpdead(player: Player, @Name("player") target: Player){
+        if (EventManager.currentEvent == null) return
+
+        Bukkit.getOnlinePlayers().filter { !EventManager.alivePlayers.contains(it.uniqueId) }
+            .forEach { dead ->
+                dead.teleport(player.location)
+          }
+
+        player.sendMessage(translate("&aTeleported all dead players to you."))
+    }
+
     fun scatter(p: Player, eventName: String){
         if (config.getString("$eventName.location1") != null){
             val x = config.getDouble("$eventName.location1.x")
