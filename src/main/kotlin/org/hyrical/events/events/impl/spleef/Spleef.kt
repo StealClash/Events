@@ -50,6 +50,10 @@ object Spleef : Event() {
         return arrayListOf(SpleefListener())
     }
 
+    override fun getDeathMessage(player: Player, killer: Player?): String {
+        return "&b${player.name} &7has been spleefed."
+    }
+
     override fun startEvent() {
         for (player in EventManager.alivePlayers){
             EventAdmin.scatter(Bukkit.getPlayer(player)!!, "spleef")
@@ -63,6 +67,10 @@ object Spleef : Event() {
         for (player in EventManager.alivePlayers){
             applyKit(Bukkit.getPlayer(player)!!)
         }
+    }
+
+    override fun revive(player: Player) {
+        applyKit(player)
     }
 
     fun applyKit(player: Player){

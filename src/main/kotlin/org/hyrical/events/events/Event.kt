@@ -13,10 +13,13 @@ abstract class Event {
 
     abstract fun getCommands(): ArrayList<BaseCommand>
     abstract fun getListeners(): ArrayList<Listener>
+    abstract fun getDeathMessage(player: Player, killer: Player?): String
 
     open fun giveKitOnStart(): String { return "" }
 
     open fun startEvent(){}
     open fun endEvent(){}
+
+    open fun revive(player: Player){}
 
 }

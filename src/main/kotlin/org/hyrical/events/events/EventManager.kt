@@ -10,6 +10,7 @@ import org.hyrical.events.events.impl.SimonSays
 import org.hyrical.events.events.impl.fourcorners.FourCorners
 import org.hyrical.events.events.impl.spleef.Spleef
 import org.hyrical.events.events.impl.tnttag.TNTTag
+import org.hyrical.events.events.impl.woolshuffle.WoolShuffle
 import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.saveToConfig
 import java.util.UUID
@@ -33,6 +34,7 @@ object EventManager {
         events.add(TNTTag)
         events.add(Spleef)
         events.add(FourCorners)
+        events.add(WoolShuffle)
 
         for (event in events){
             for (command in event.getCommands()){

@@ -111,6 +111,8 @@ object EventAdmin : BaseCommand() {
         target.gameMode = GameMode.SURVIVAL
         scatter(target, EventManager.currentEvent!!.getName())
         player.sendMessage(translate("&aRevived that player."))
+
+        EventManager.currentEvent!!.revive(target)
     }
 
     @Subcommand("tpalive")

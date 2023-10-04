@@ -64,6 +64,10 @@ object TNTTag : Event() {
         return arrayListOf(TNTListener())
     }
 
+    override fun getDeathMessage(player: Player, killer: Player?): String {
+        return "${player.name} &7was blown up."
+    }
+
     override fun startEvent() {
         stopped = false
         round = 0
@@ -181,6 +185,10 @@ object TNTTag : Event() {
 
             applyRunner(player)
         }
+    }
+
+    override fun revive(player: Player) {
+        applyRunner(player)
     }
 
     fun applyTNT(player: Player){

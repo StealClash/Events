@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import org.hyrical.events.EventsServer
@@ -54,6 +55,10 @@ object FourCorners : Event() {
         return arrayListOf(FourCornersListener())
     }
 
+    override fun getDeathMessage(player: Player, killer: Player?): String {
+        return "&b${player.name} &7has died."
+    }
+
     override fun startEvent() {
         for (alive in EventManager.alivePlayers){
             EventAdmin.scatter(Bukkit.getPlayer(alive)!!, "fourcorners")
@@ -84,7 +89,6 @@ object FourCorners : Event() {
         info = "  Pick a Corner&7: &e${TimeUtils.formatDuration(currentTime * 1000L)}"
         tasks[1] = object : BukkitRunnable() {
             override fun run() {
-                info = "  Pick a Corner&7: &e${TimeUtils.formatDuration(currentTime * 1000L)}"
 
                 if (currentTime == 0){
                     removeMiddle()
@@ -92,9 +96,21 @@ object FourCorners : Event() {
 
                     Bukkit.broadcastMessage(translate("&7[&b&lEvents&7] &fThe middle has been removed!"))
 
+
+                    Bukkit.getOnlinePlayers().forEach { it.playSound(it.location,Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,2f) }
+
                     tasks[1] = null
                     cancel()
                     return
+                }
+
+
+                info = "  Pick a Corner&7: &e${TimeUtils.formatDuration(currentTime * 1000L)}"
+
+
+
+                if (currentTime == 2 || currentTime == 1){
+                    Bukkit.getOnlinePlayers().forEach { it.playSound(it.location,Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,1f) }
                 }
 
                 currentTime--
@@ -107,7 +123,6 @@ object FourCorners : Event() {
         info = "  Drop in&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
         tasks[2] = object : BukkitRunnable() {
             override fun run() {
-                info = "  Drop in&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
 
 
                 if (currentTime == 0){
@@ -134,6 +149,8 @@ object FourCorners : Event() {
                             removeYellowCorner()
                         }
                     }
+                    Bukkit.getOnlinePlayers().forEach { it.playSound(it.location,Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,2f) }
+
 
                     nextRoundIntermission()
 
@@ -142,8 +159,15 @@ object FourCorners : Event() {
                     return
                 }
 
-                currentTime--
+                info = "  Drop in&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
 
+
+
+                if (currentTime == 2 || currentTime == 1){
+                    Bukkit.getOnlinePlayers().forEach { it.playSound(it.location,Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,1f) }
+                }
+
+                currentTime--
             }
         }.runTaskTimer(EventsServer.instance, 0L, 20L)
     }
@@ -154,7 +178,6 @@ object FourCorners : Event() {
         info = "  Next Round&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
         tasks[3] = object : BukkitRunnable() {
             override fun run() {
-                info = "  Next Round&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
 
                 if (currentTime == 0){
                     Bukkit.broadcastMessage(translate("&7[&b&lEvents&7] &fStarting new round. Choose your corners."))
@@ -175,6 +198,8 @@ object FourCorners : Event() {
                         }
                     }
 
+                    Bukkit.getOnlinePlayers().forEach { it.playSound(it.location,Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,2f) }
+
                     addMiddle()
                     gameIntermission()
 
@@ -183,6 +208,13 @@ object FourCorners : Event() {
                     return
                 }
 
+
+                info = "  Next Round&7: &c${TimeUtils.formatDuration(currentTime * 1000L)}"
+
+
+                if (currentTime == 2 || currentTime == 1){
+                    Bukkit.getOnlinePlayers().forEach { it.playSound(it.location,Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,1f) }
+                }
 
                 currentTime--
 

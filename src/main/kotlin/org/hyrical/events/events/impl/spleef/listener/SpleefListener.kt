@@ -59,10 +59,5 @@ class SpleefListener : Listener {
         event.isCancelled = true
     }
 
-    @EventHandler
-    fun death(event: PlayerDeathEvent){
-        if (EventManager.currentEvent != null && EventManager.currentEvent is Spleef){
-            event.deathMessage = translate("&b${event.player.name} &7has been spleefed.")
-        }
-    }
+
 }

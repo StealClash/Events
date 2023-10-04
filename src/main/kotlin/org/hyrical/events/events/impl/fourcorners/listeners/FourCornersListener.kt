@@ -25,20 +25,14 @@ class FourCornersListener : Listener {
 
         if (player.gameMode == GameMode.SPECTATOR || player.gameMode == GameMode.CREATIVE || EventManager.spectators.contains(player.uniqueId)) return
         if (EventManager.currentEvent == null || EventManager.currentEvent !is FourCorners) return
+        if (event.from.blockX == event.to.getBlockX() && event.from.blockY == event.to.blockY && event.from.blockZ == event.to.blockZ) return
         if (!isPlayerInWater(player)) return
 
         world.strikeLightningEffect(player.location)
         player.health = 0.0
     }
 
-    @EventHandler
-    fun death(event: PlayerDeathEvent){
-        if (EventManager.currentEvent != null && EventManager.currentEvent is FourCorners){
-            event.deathMessage = translate("&b${event.player.name} &fhas died.")
-        }
-    }
-
-    fun isPlayerInWater(player: Player): Boolean {
+    private fun isPlayerInWater(player: Player): Boolean {
         val x = player.location.x
         val y = player.location.y
         val z = player.location.z

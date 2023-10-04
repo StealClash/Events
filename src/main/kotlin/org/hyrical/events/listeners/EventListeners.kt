@@ -116,9 +116,7 @@ object EventListeners : Listener {
         EventManager.spectators.add(player.uniqueId)
         EventManager.alivePlayers.remove(player.uniqueId)
 
-        if (EventManager.currentEvent is TNTTag){
-            event.deathMessage = translate("&b${player.name} &7was blown up.")
-        }
+        event.deathMessage = translate(EventManager.currentEvent!!.getDeathMessage(player, player.killer))
 
         object : BukkitRunnable(){
             override fun run() {
