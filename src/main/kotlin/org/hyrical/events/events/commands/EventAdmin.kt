@@ -83,6 +83,7 @@ object EventAdmin : BaseCommand() {
     }
 
     @Subcommand("scatter")
+    @CommandCompletion("event")
     fun eventScatter(player: Player, @Single @Name("event") eventName: String, @Name("player") inputString: String){
         if (inputString == "all"){
             for (p in Bukkit.getOnlinePlayers()){

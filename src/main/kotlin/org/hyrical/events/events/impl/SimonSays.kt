@@ -8,7 +8,7 @@ import org.hyrical.events.events.Event
 object SimonSays : Event() {
 
     override fun getName(): String {
-        return "SimonSays"
+        return "simonsays"
     }
 
     override fun getDisplayName(): String {

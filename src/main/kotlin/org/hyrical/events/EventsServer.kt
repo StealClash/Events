@@ -39,6 +39,10 @@ class EventsServer : JavaPlugin() {
         commandManager.registerCommand(TPHereCommand)
         commandManager.registerCommand(FreezeMovementCommand)
 
+        commandManager.commandCompletions.registerCompletion("event") {
+            return@registerCompletion EventManager.events.map { it.getName() }
+        }
+
         registerListener(MenuListener)
         registerListener(EventListeners)
         //registerListener(FreezeMovementCommand)

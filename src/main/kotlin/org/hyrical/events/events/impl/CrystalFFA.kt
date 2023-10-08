@@ -8,7 +8,7 @@ import org.hyrical.events.events.Event
 object CrystalFFA : Event() {
 
     override fun getName(): String {
-        return "CrystalFFA"
+        return "crystalffa"
     }
 
     override fun getDisplayName(): String {
