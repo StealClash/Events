@@ -19,10 +19,12 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.scheduler.BukkitRunnable
 import org.hyrical.events.EventsServer
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.commands.EventAdmin
+import org.hyrical.events.events.impl.CrystalFFA
 import org.hyrical.events.events.impl.tnttag.TNTTag
 import org.hyrical.events.listeners.customevents.EventKill
 import org.hyrical.events.managers.BuildManager
@@ -55,6 +57,21 @@ object EventListeners : Listener {
         if ((event.damager as Player).gameMode == GameMode.CREATIVE) return
 
         event.isCancelled = true
+    }
+
+
+    fun teleport(event: PlayerTeleportEvent){
+        if (EventManager.currentEvent != null && EventManager.currentEvent is CrystalFFA){
+            val player = event.player
+            val worldBorder = player.world.worldBorder
+
+            val to = event.to
+
+            if (!worldBorder.isInside(to)){
+                player.sendMessage(translate("&cYour pearl would have landed inside of the world border however we cancelled it. (say thanks noytorba)"))
+                event.isCancelled = true
+            }
+        }
     }
 
     @EventHandler

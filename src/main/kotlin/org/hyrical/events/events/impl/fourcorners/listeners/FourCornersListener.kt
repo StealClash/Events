@@ -25,7 +25,6 @@ class FourCornersListener : Listener {
 
         if (player.gameMode == GameMode.SPECTATOR || player.gameMode == GameMode.CREATIVE || EventManager.spectators.contains(player.uniqueId)) return
         if (EventManager.currentEvent == null || EventManager.currentEvent !is FourCorners) return
-        if (event.from.blockX == event.to.getBlockX() && event.from.blockY == event.to.blockY && event.from.blockZ == event.to.blockZ) return
         if (!isPlayerInWater(player)) return
 
         world.strikeLightningEffect(player.location)

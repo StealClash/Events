@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import org.bukkit.entity.Player
 import org.hyrical.events.events.EventManager
+import org.hyrical.events.events.impl.spleef.Spleef
 import org.hyrical.events.utils.Spawn
 import org.hyrical.events.utils.translate
 
@@ -12,6 +13,8 @@ object SpawnCommand : BaseCommand() {
 
     @CommandAlias("spawn")
     fun spawn(player: Player){
+        if (EventManager.currentEvent != null && EventManager.currentEvent is Spleef) return
+        
         if (EventManager.currentEvent == null){
             player.teleport(Spawn.getSpawnLocation())
         } else if (!EventManager.alivePlayers.contains(player.uniqueId)){

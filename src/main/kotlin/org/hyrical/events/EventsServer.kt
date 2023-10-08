@@ -41,7 +41,7 @@ class EventsServer : JavaPlugin() {
 
         registerListener(MenuListener)
         registerListener(EventListeners)
-        registerListener(FreezeMovementCommand)
+        //registerListener(FreezeMovementCommand)
 
         EventsExpansion().register()
 

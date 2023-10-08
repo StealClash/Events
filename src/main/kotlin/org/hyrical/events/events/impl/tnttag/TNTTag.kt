@@ -1,10 +1,7 @@
 package org.hyrical.events.events.impl.tnttag
 
 import co.aikar.commands.BaseCommand
-import org.bukkit.Bukkit
-import org.bukkit.Effect
-import org.bukkit.Material
-import org.bukkit.Particle
+import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -43,6 +40,8 @@ object TNTTag : Event() {
     var task1: BukkitTask? = null
     var task2: BukkitTask? = null
 
+    var lastSoundAt = 0L
+
     override fun getName(): String {
         return "tnttag"
     }
@@ -53,6 +52,14 @@ object TNTTag : Event() {
 
     override fun getScoreboardLines(): MutableList<String> {
         if (TimeUtils.formatDuration((roundStarted + getBaseTime()) - System.currentTimeMillis()) == "") return mutableListOf("", "  &fExplosion in &c0s", "  &fRound: &e${round}")
+        if (((roundStarted + getBaseTime()) - System.currentTimeMillis()) / 1000L == 3L || ((roundStarted + getBaseTime()) - System.currentTimeMillis()) / 1000L == 2L || ((roundStarted + getBaseTime()) - System.currentTimeMillis()) / 1000L == 1L) {
+            if (((roundStarted + getBaseTime()) - System.currentTimeMillis()) / 1000L != lastSoundAt) {
+                lastSoundAt = ((roundStarted + getBaseTime()) - System.currentTimeMillis()) / 1000L
+                Bukkit.getOnlinePlayers().forEach {
+                    it.playSound(it, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,1f)
+                }
+            }
+        }
         return mutableListOf("", "  &fExplosion in &c" + TimeUtils.formatDuration((roundStarted + getBaseTime()) - System.currentTimeMillis()), "  &fRound: &e${round}")
     }
 
@@ -113,6 +120,11 @@ object TNTTag : Event() {
 
         chooseTNTS()
         chooseRunners()
+
+        Bukkit.getOnlinePlayers().forEach {
+            it.sendTitle(translate("&c&lTNT TAG"), translate("&fRound &e$round &fhas started."))
+            it.playSound(it, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,2f)
+        }
 
         Bukkit.broadcastMessage("")
         Bukkit.broadcastMessage(translate("&c&lTNT TAG"))
@@ -177,6 +189,8 @@ object TNTTag : Event() {
     fun chooseRunners(){
         for (player in Bukkit.getOnlinePlayers()){
             if (teleport.contains(round) || round >= 12){
+                if (!EventManager.alivePlayers.contains(player.uniqueId) && player.gameMode == GameMode.SURVIVAL) continue
+
                 EventAdmin.scatter(player, "tnttag")
             }
 

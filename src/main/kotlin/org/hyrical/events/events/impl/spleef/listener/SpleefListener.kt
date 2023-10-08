@@ -1,5 +1,6 @@
 package org.hyrical.events.events.impl.spleef.listener
 
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -9,6 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.inventory.ItemStack
 import org.hyrical.events.events.EventManager
 import org.hyrical.events.events.impl.spleef.Spleef
 import org.hyrical.events.utils.translate
@@ -18,10 +20,9 @@ class SpleefListener : Listener {
     @EventHandler
     fun blockBreak(event: BlockBreakEvent){
         if (EventManager.currentEvent != null && EventManager.currentEvent is Spleef){
-            for (drop in event.block.drops){
-                event.player.inventory.addItem(drop)
-            }
-            event.block.drops.clear()
+            event.player.inventory.addItem(ItemStack(Material.SNOWBALL))
+            event.isDropItems = false
+
         }
     }
 
